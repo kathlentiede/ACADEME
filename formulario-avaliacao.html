@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Avaliação - Projeto ACADEME</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; max-width: 800px; }
+    .pergunta { margin-bottom: 20px; }
+    .pergunta label { font-weight: bold; }
+    textarea { width: 100%; height: 100px; margin-top: 10px; }
+    .resultado { font-weight: bold; font-size: 18px; margin-top: 30px; }
+    button { padding: 10px 20px; margin-top: 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+
+  <h1>Avaliação de Entrevista - Projeto ACADEME</h1>
+  <form id="formAvaliacao">
+
+    <!-- CAMPO DE NOME -->
+    <div class="pergunta">
+      <label>Nome do(a) avaliado(a):</label><br>
+      <input type="text" id="nomeManual" placeholder="Digite o nome" oninput="sincronizarNomeManual()">
+    </div>
+
+    <!-- QUESTÕES COM PONTUAÇÃO AJUSTADA -->
+
+    <div class="pergunta">
+      <label>1. Apresentação (peso 4):</label><br>
+      <input type="radio" name="q1" value="0"> Descuidada e ambiente ruidoso<br>
+      <input type="radio" name="q1" value="2"> Razoável<br>
+      <input type="radio" name="q1" value="4"> Adequada e ambiente limpo/silencioso<br>
+    </div>
+
+    <div class="pergunta">
+      <label>2. Clareza e desenvoltura (peso 4):</label><br>
+      <input type="radio" name="q2" value="0"> Confuso ou pouco claro<br>
+      <input type="radio" name="q2" value="2"> Comunicação razoável<br>
+      <input type="radio" name="q2" value="4"> Fala com segurança<br>
+    </div>
+
+    <div class="pergunta">
+      <label>3. Interesse e expectativa (peso 5):</label><br>
+      <input type="radio" name="q3" value="1"> Vago ou desinteressado<br>
+      <input type="radio" name="q3" value="3"> Interesse sem objetivos claros<br>
+      <input type="radio" name="q3" value="5"> Clareza e motivação alinhada<br>
+    </div>
+
+    <div class="pergunta">
+      <label>4. Experiências prévias - contribuição em artigo (peso 5):</label><br>
+      <input type="radio" name="q4" value="1"> Atuou apenas como auxiliar<br>
+      <input type="radio" name="q4" value="3"> Ajudou nos resultados/introdução<br>
+      <input type="radio" name="q4" value="5"> Primeiro autor, atuou em toda a pesquisa<br>
+    </div>
+
+    <div class="pergunta">
+      <label>5. Bancos de dados utilizados (peso 4):</label><br>
+      <input type="radio" name="q5" value="1"> Citou 2<br>
+      <input type="radio" name="q5" value="2"> Citou 3<br>
+      <input type="radio" name="q5" value="4"> Citou mais de 3<br>
+    </div>
+
+    <div class="pergunta">
+      <label>6. Tipos de estudos (peso 4):</label><br>
+      <input type="radio" name="q6" value="1"> Explicação confusa<br>
+      <input type="radio" name="q6" value="2"> Soube diferenciar alguns<br>
+      <input type="radio" name="q6" value="4"> Mostrou domínio claro<br>
+    </div>
+
+    <div class="pergunta">
+      <label>7. Currículo Lattes (peso 4):</label><br>
+      <input type="radio" name="q7" value="0"> Não sabe o que é<br>
+      <input type="radio" name="q7" value="2"> Sabe o que é, mas não tem<br>
+      <input type="radio" name="q7" value="4"> Sabe o que é e tem<br>
+    </div>
+
+    <div class="pergunta">
+      <label>8. Nível de inglês (peso 12):</label><br>
+      <input type="radio" name="q8" value="4"> Básico, mínimo domínio<br>
+      <input type="radio" name="q8" value="8"> Básico, compreendeu parcialmente o abstract<br>
+      <input type="radio" name="q8" value="12"> Intermediário-avançad, compreendeu completamente o abstract<br>
+    </div>
+
+    <div class="pergunta">
+      <label>9. Situação-problema (peso 3):</label><br>
+      <input type="radio" name="q9" value="0"> Outra resposta<br>
+      <input type="radio" name="q9" value="3"> Caso-controle<br>
+    </div>
+
+    <!-- COMENTÁRIOS -->
+    <div class="pergunta">
+      <label>Comentários adicionais:</label><br>
+      <textarea name="comentarios" placeholder="Escreva aqui suas observações sobre o candidato..."></textarea>
+    </div>
+
+    <!-- BOTÃO E RESULTADO -->
+    <button type="button" onclick="calcularPontuacao()">Calcular Pontuação</button>
+    <div class="resultado" id="resultado"></div>
+
+  </form>
+
+  <script>
+    function calcularPontuacao() {
+      // Obter nome
+      let nome = document.getElementById("nomeSelecionado").value;
+      const nomeManual = document.getElementById("nomeManual").value.trim();
+
+      if (nome === "Outro" || nome === "") {
+        if (nomeManual === "") {
+          alert("Por favor, informe o nome do(a) avaliado(a).");
+          return;
+        }
+        nome = nomeManual;
+      }
+
+      // Somar pontuação
+      const totalPerguntas = 9;
+      let total = 0;
+
+      for (let i = 1; i <= totalPerguntas; i++) {
+        const resposta = document.querySelector(`input[name="q${i}"]:checked`);
+        if (!resposta) {
+          alert(`Por favor, responda a pergunta ${i}.`);
+          return;
+        }
+        total += parseInt(resposta.value);
+      }
+
+      const comentarios = document.querySelector('textarea[name="comentarios"]').value;
+      const resultado = document.getElementById("resultado");
+
+      resultado.innerHTML = `<strong>Nome do avaliado:</strong> ${nome}<br>
+      <strong>Pontuação total:</strong> ${total} de 45<br><br>
+      <strong>Comentários:</strong><br>${comentarios}`;
+    }
+
+    function limparCampoNomeManual() {
+      if (document.getElementById("nomeSelecionado").value !== "Outro") {
+        document.getElementById("nomeManual").value = "";
+      }
+    }
+
+    function sincronizarNomeManual() {
+      document.getElementById("nomeSelecionado").value = "Outro";
+    }
+  </script>
+
+</body>
+</html>
